@@ -131,6 +131,26 @@ app.delete("/tasks/:id", (req, res) => {
   });
 });
 
+app.post("/google-login", (req, res) => {
+  const { name, email, google_id } = req.body;
+
+  db.query("SELECT * FROM users WHERE email = ?", [email], (err, result) => {
+    if (result.length > 0) {
+      return res.json({ user_id: result[0].id });
+    }
+
+    db.query(
+      "INSERT INTO users (email, google_id, password) VALUES (?, ?, ?)",
+      [email, google_id, "GOOGLE_USER"],
+      (err, insertResult) => {
+        res.json({ user_id: insertResult.insertId });
+      }
+    );
+  });
+});
+
+
+
 app.listen(5000, () => {
   console.log("🚀 Server running on http://localhost:5000");
 });

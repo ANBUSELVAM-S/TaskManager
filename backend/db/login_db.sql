@@ -42,6 +42,10 @@ SELECT * FROM tasks WHERE user_id = 1 ORDER BY date, time;
 ALTER TABLE tasks 
 ADD status ENUM('pending', 'completed') DEFAULT 'pending';
 
+ALTER TABLE users ADD google_id VARCHAR(255);
+
+
+
 
 -- Verify the data
 SELECT 'Users Table' as Table_Name;
