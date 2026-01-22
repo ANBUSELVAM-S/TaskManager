@@ -1,6 +1,20 @@
+body, html {
+  height: 100%;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  
+  background: #0f172a;
+}
+.dashboards{
+  background-color: white;
+  display: flex;
+}
 .pending-container {
   padding: 20px;
   max-width: 790px;
+  
+  
 }
 .pending-title{
     text-align: center;
@@ -71,13 +85,17 @@
 
 /* Mobile */
 @media (max-width: 768px) {
-  .dashboard {
-    flex-direction: column;
+  .dashboards {
+    width:74%;
+    margin-left: 4rem;
+    height: 700px;
+    position: relative;
+    
   }
 
   .pending-container {
-    padding: 10px;
-    max-width: 100%;
+    width: 88.3%;
+
   }
 
   .pending-title {
@@ -118,7 +136,7 @@
 /* Tablet */
 @media (max-width: 768px) {
   .dashboard {
-    flex-direction: column;
+    width: 100%;
   }
 
   .pending-container {

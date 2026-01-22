@@ -68,8 +68,7 @@ function Dashboard() {
     <div className="dashboard">
       <Sidebar />
       <div className="main-content">
-        <Navbar />
-
+      <Navbar />
         <div className="cards">
           <div className="card">
             <h3>Total Tasks</h3>

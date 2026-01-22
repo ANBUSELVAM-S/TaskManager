@@ -1,7 +1,7 @@
 .dashboard {
   display: flex;
   height: 100vh;
-  background: #f4f6f8;
+  background: #f6f6f6;
 }
 /* 
 /* Sidebar */
@@ -10,6 +10,7 @@
 /* Main Content */
 .main-content {
   padding: 20px;
+  background-color: white;
   
 }
 
@@ -74,11 +75,29 @@
     width: 90%;
   }
 }
+/* Slide Sidebar from Left */
+@media (max-width: 768px) {
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -260px;   /* hidden */
+    height: 100vh;
+    width: 220px;
+    transition: left 0.3s ease-in-out;
+    z-index: 1000;
+  }
+
+  .sidebar.open {
+    left: 0;       /* visible */
+  }
+}
+
 
 /* Mobile */
 @media (max-width: 768px) {
   .dashboard {
-    flex-direction: column;
+    height: 200vh;
   }
 
   .cards {

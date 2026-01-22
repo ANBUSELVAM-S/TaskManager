@@ -1,21 +1,26 @@
 
 body, html {
   height: 100%;
-  margin: 0;
   font-family: Arial, sans-serif;
   display: flex;
   justify-content: center;
-  align-items: center;
+  
   background: #0f172a;
 }
+
 .task-container{
-  width: 75%;;
+  padding: 20px;
+  background-color: rgb(255, 252, 252);
+  
 }
+  
+
 /* Form card */
 form {
-  background: rgb(255, 253, 253);
+  background: rgb(255, 255, 255);
   padding: 30px 25px;
-  margin: 1.3rem;
+  margin: 2rem;
+  gap:10px;
   border-radius: 12px;
   width: 740px;
   box-shadow: 0 15px 30px rgba(0,0,0,0.2);
@@ -47,7 +52,7 @@ form textarea {
   padding: 10px;
   margin-top: 5px;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 2px solid #ccc;
   outline: none;
   transition: 0.3s;
 }
@@ -75,6 +80,9 @@ form button {
 form button:hover {
   opacity: 0.9;
   transform: translateY(-2px);
+}
+ textarea{
+  height:10rem;
 }
 
 /* Task list */
@@ -106,14 +114,16 @@ ul li::before {
 /* Responsive for small screens */
 /* Tablet - Medium devices */
 @media (max-width: 768px) {
-  .task-container {
+  .dashboard{
     width: 100%;
+  }
+  .task-container {
+    width: 88.3%;
   }
 
   form {
     width: 75%;
-    padding: 20px;
-    margin: 1rem;
+   
   }
 
   ul li {
@@ -122,7 +132,7 @@ ul li::before {
   }
 
   form button {
-    padding: 10px;
+    
     font-size: 15px;
   }
 }
@@ -131,13 +141,12 @@ ul li::before {
 @media (max-width: 450px) {
   .task-container {
     width: 100%;
-    padding: 10px;
+    
   }
 
   form {
     width: 100%;
-    padding: 15px;
-    margin: 0.5rem;
+    
   }
 
   form input,
@@ -154,7 +163,7 @@ ul li::before {
 
   form button {
     width: 100%;
-    padding: 10px;
+    
     font-size: 14px;
   }
 }

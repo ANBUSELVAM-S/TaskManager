@@ -65,7 +65,7 @@ function Pending() {
   };
 
   return (
-    <div className="dashboard">
+    <div className="dashboards">
       <Sidebar />
 
       <div className="pending-container">
