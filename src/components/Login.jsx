@@ -1,7 +1,9 @@
 import { useState } from "react";
 import "../styles/Login.css";
 import { useNavigate } from "react-router-dom";
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleOAuthProvider,GoogleLogin } from "@react-oauth/google";
+
+const CLIENT_ID = "553832021727-dpmp3or6t2dl9bj3iot3040kbaie4cjq.apps.googleusercontent.com"; // replace with your own client ID
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -33,8 +35,29 @@ function Login() {
   }
 };
 
+  const handleLoginSuccess = (credentialResponse) => {
+  console.log("Google Login Success:", credentialResponse);
+
+  // (Optional) store token
+  localStorage.setItem("google_token", credentialResponse.credential);
+
+  alert("Google Login Successful!");
+
+  // ✅ Correct navigation
+  navigate("/dashboard");
+};
+
+
+  const handleLoginError = () => {
+    console.log("Google Login Failed");
+    alert("Google Login Failed!");
+  };
+
+
+
 
   return (
+    <GoogleOAuthProvider clientId={CLIENT_ID}>
     <div className="login-container">
       <form className="login-box" onSubmit={handleSubmit}>
         <h2 style={{ color: "white" }}>Login</h2>
@@ -56,9 +79,15 @@ function Login() {
         />
 
         <button type="submit">Login</button>
-       
+        <h3>Or</h3>
+       <div className="google-login">
+            <GoogleLogin
+              onSuccess={handleLoginSuccess}
+              onError={handleLoginError}
+            />
+          </div>
       </form>
-    </div>
+    </div></GoogleOAuthProvider>
   );
 }
 

@@ -63,7 +63,7 @@ function Task() {
   };
 
   return (
-    <div className="dashboard">
+    <div className="dashboard" style={{height:"95vh"}}>
       <Sidebar />
       <div className="task-container">
         <h2>➕ Add New Task</h2>

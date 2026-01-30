@@ -132,17 +132,23 @@ app.delete("/tasks/:id", (req, res) => {
 });
 
 app.post("/google-login", (req, res) => {
-  const { name, email, google_id } = req.body;
+  const { email, google_id } = req.body;
 
   db.query("SELECT * FROM users WHERE email = ?", [email], (err, result) => {
+    if (err) return res.status(500).json({ error: "DB error" });
+
+    // User already exists
     if (result.length > 0) {
       return res.json({ user_id: result[0].id });
     }
 
+    // New Google user
     db.query(
       "INSERT INTO users (email, google_id, password) VALUES (?, ?, ?)",
       [email, google_id, "GOOGLE_USER"],
       (err, insertResult) => {
+        if (err) return res.status(500).json({ error: "Insert failed" });
+
         res.json({ user_id: insertResult.insertId });
       }
     );

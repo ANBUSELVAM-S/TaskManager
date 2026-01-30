@@ -65,7 +65,7 @@ function Dashboard() {
   };
 
   return (
-    <div className="dashboard">
+    <div className="dashboard" style={{backgroundColor:"#0f172a"}}>
       <Sidebar />
       <div className="main-content">
       <Navbar />
