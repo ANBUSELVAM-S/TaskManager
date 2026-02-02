@@ -43,7 +43,7 @@ body, html {
 .task-card {
   padding: 12px;
   margin: 10px 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: rgb(79, 132, 224);
   color: white;
   border-radius: 8px;
   box-shadow: 0 8px 25px rgba(0,0,0,0.15);
@@ -53,10 +53,12 @@ body, html {
 .task-datetime {
   font-size: 13px;
   
+  
 }
 
 .task-desc {
   font-size: 15px;
+  
   
 }
 
@@ -117,6 +119,7 @@ body, html {
 
   .task-desc {
     font-size: 14px;
+    display: flex;
   }
 
   .task-actions {

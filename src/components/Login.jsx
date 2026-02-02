@@ -2,6 +2,8 @@ import { useState } from "react";
 import "../styles/Login.css";
 import { useNavigate } from "react-router-dom";
 import { GoogleOAuthProvider,GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
+
 
 const CLIENT_ID = "553832021727-dpmp3or6t2dl9bj3iot3040kbaie4cjq.apps.googleusercontent.com"; // replace with your own client ID
 
@@ -35,17 +37,37 @@ function Login() {
   }
 };
 
-  const handleLoginSuccess = (credentialResponse) => {
-  console.log("Google Login Success:", credentialResponse);
+ const handleLoginSuccess = async (credentialResponse) => {
+  try {
+    // 1️⃣ Decode Google token
+    const decoded = jwtDecode(credentialResponse.credential);
 
-  // (Optional) store token
-  localStorage.setItem("google_token", credentialResponse.credential);
+    const googleUser = {
+      email: decoded.email,
+      google_id: decoded.sub   // unique Google ID
+    };
 
-  alert("Google Login Successful!");
+    // 2️⃣ Send Google user to backend
+    const response = await fetch("http://localhost:5000/google-login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(googleUser)
+    });
 
-  // ✅ Correct navigation
-  navigate("/dashboard");
+    const result = await response.json();
+
+    // 3️⃣ Store user_id returned from DB
+    localStorage.setItem("user_id", result.user_id);
+
+    alert("Google Login Successful!");
+    navigate("/dashboard");
+
+  } catch (error) {
+    console.error(error);
+    alert("Google Login Failed");
+  }
 };
+
 
 
   const handleLoginError = () => {
