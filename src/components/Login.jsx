@@ -26,6 +26,8 @@ function Login() {
 
     if (result.success) {
       localStorage.setItem("user_id", result.user_id);
+      localStorage.setItem("role", "admin");   // ✅ ADD THIS
+      alert("Google Login Successful!");
       navigate("/dashboard");
     } else {
       alert(result.message);
@@ -57,10 +59,11 @@ function Login() {
     const result = await response.json();
 
     // 3️⃣ Store user_id returned from DB
-    localStorage.setItem("user_id", result.user_id);
+   localStorage.setItem("user_id", result.user_id);
+   localStorage.setItem("role", "google");  
+   alert("Google Login Successful!");// ✅ ADD THIS
+   navigate("/dashboard");
 
-    alert("Google Login Successful!");
-    navigate("/dashboard");
 
   } catch (error) {
     console.error(error);

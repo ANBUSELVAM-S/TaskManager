@@ -99,7 +99,7 @@ function Pending() {
             </button>
 
             <button className="btn-delete" onClick={() => deleteTask(task.id)}>
-              🗑 Delete
+              ❌ Delete
             </button>
           </div>
 

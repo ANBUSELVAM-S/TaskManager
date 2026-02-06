@@ -6,6 +6,10 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 function Sidebar() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [role, setRole] = useState("");
+
+
+
 
   return (
     <>
