@@ -6,6 +6,9 @@ import "../styles/Pending.css";
 function Pending() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+
 
   const userId = localStorage.getItem("user_id");
 
@@ -16,6 +19,17 @@ function Pending() {
     hour: "2-digit",
     minute: "2-digit"
   });
+
+  const openTaskPopup = (task) => {
+  setSelectedTask(task);
+  setShowPopup(true);
+};
+
+const closePopup = () => {
+  setShowPopup(false);
+  setSelectedTask(null);
+};
+
 
   useEffect(() => {
     if (userId) {
@@ -83,7 +97,12 @@ function Pending() {
   ) : (
     <ul className="task-list">
       {tasks.map(task => (
-        <li key={task.id} className="task-card">
+        <li
+  key={task.id}
+  className="task-card"
+  onClick={() => openTaskPopup(task)}
+>
+
           
           <div className="task-datetime">
             Now: 📅 {todayDate} ⏰ {currentTime}
@@ -94,13 +113,26 @@ function Pending() {
           </div>
 
           <div className="task-actions">
-            <button className="btn-complete" onClick={() => completeTask(task.id)}>
-              ✅ Completed
-            </button>
+            <button
+  className="btn-complete"
+  onClick={(e) => {
+    e.stopPropagation();
+    completeTask(task.id);
+  }}
+>
+  ✅ Completed
+</button>
 
-            <button className="btn-delete" onClick={() => deleteTask(task.id)}>
-              ❌ Delete
-            </button>
+<button
+  className="btn-delete"
+  onClick={(e) => {
+    e.stopPropagation();
+    deleteTask(task.id);
+  }}
+>
+  ❌ Delete
+</button>
+
           </div>
 
         </li>
@@ -108,6 +140,33 @@ function Pending() {
     </ul>
   )}
 </div>
+{showPopup && selectedTask && (
+  <div className="popup-overlay" onClick={closePopup}>
+    <div className="popup-card" onClick={(e) => e.stopPropagation()}>
+      
+      <h2>📌 Task Details</h2>
+
+      <p><strong>Description:</strong> {selectedTask.description}</p>
+      <p><strong>Date:</strong> {selectedTask.date}</p>
+      <p><strong>Time:</strong> {selectedTask.time}</p>
+      <p><strong>Status:</strong> {selectedTask.status}</p>
+
+      {selectedTask.assigned_by_admin && (
+        <div className="assigned-by">
+  👤 Assigned by: <strong>{selectedTask.assigned_by_admin}</strong>
+</div>
+
+
+      )}
+
+      <button className="btn-close" onClick={closePopup}>
+        Close
+      </button>
+
+    </div>
+  </div>
+)}
+
 
     </div>
   );

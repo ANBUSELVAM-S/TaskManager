@@ -1,7 +1,13 @@
+body, html {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  background: #0f172a;
+}
 .sidebar {
     display: flex;
-  width: 220px;
-  height: 94.5vh;
+  width: 320px;
+  height: 93.5vh;
   background: #1e293b;
   color: white;
   padding: 20px;
@@ -53,7 +59,7 @@
 /* Base Sidebar */
 .sidebar {
   width: 220px;
-  height: 100vh;
+  height:93.5vh;
   background: #1e293b;
   color: white;
   padding: 20px;
@@ -67,6 +73,7 @@
 .sidebar ul {
   list-style: none;
   padding: 0;
+
 }
 
 .sidebar li {
@@ -74,6 +81,7 @@
   cursor: pointer;
   border-radius: 6px;
   font-size: 16px;
+  
 }
 
 .sidebar li:hover {

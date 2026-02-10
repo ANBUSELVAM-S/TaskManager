@@ -95,6 +95,30 @@ app.put("/tasks/:id/complete", (req, res) => {
     }
   );
 });
+app.get("/tasks", (req, res) => {
+  const { user_id } = req.query;
+
+  const sql = `
+  SELECT 
+    id,
+    user_id,
+    date,
+    time,
+    description,
+    status,
+    'Admin' AS assigned_by_admin
+  FROM tasks
+  WHERE user_id = ?
+    AND status = 'pending'
+  ORDER BY date, time
+  `;
+
+  db.query(sql, [user_id], (err, result) => {
+    if (err) return res.status(500).json(err);
+    res.json(result);
+  });
+});
+
 
 // 📊 Dashboard counts API
 app.get("/dashboard/counts", (req, res) => {

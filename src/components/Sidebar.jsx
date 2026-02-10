@@ -14,12 +14,12 @@ function Sidebar() {
   return (
     <>
       {/* Hamburger Button */}
-      <div className="hamburger" onClick={() => setOpen(!open)}>
+      <div className="hamburger" onClick={() => setOpen(!open)} >
         ☰
       </div>
 
       {/* Sidebar */}
-      <div className={`sidebar ${open ? "open" : ""}`}>
+      <div className={`sidebar ${open ? "open" : ""}`} style={{height:"93.5vh"}}>
         <ul>
           <h2>TaskManager</h2>
           <li onClick={() => navigate("/dashboard")}> Dashboard</li>

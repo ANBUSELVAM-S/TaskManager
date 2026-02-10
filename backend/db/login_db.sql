@@ -12,6 +12,7 @@ CREATE TABLE users (
   email VARCHAR(100) UNIQUE NOT NULL,
   password VARCHAR(255) NOT NULL,
   google_id VARCHAR(255),
+  role ENUM('admin','user') DEFAULT 'user',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -27,10 +28,9 @@ CREATE TABLE tasks (
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-
 -- Insert admin user (password: "admin123" - hashed with bcrypt)
-INSERT INTO users (email, password) VALUES 
-("admin@gmail.com", "$2b$10$GV7lIqJw5RbH8dBxaPYHJe2k8tFaNyo4paov2V8XLLk7fw7M8t4GG");
+INSERT INTO users (email, password,role) VALUES 
+("admin@gmail.com", "$2b$10$GV7lIqJw5RbH8dBxaPYHJe2k8tFaNyo4paov2V8XLLk7fw7M8t4GG","admin");
 
 -- Insert sample tasks for admin user (id=1)
 INSERT INTO tasks (user_id, date, time, description) VALUES 
@@ -38,12 +38,6 @@ INSERT INTO tasks (user_id, date, time, description) VALUES
 
 -- Check if tasks exist for user_id = 1
 SELECT * FROM tasks WHERE user_id = 1 ORDER BY date, time;
-
-
-ALTER TABLE tasks 
-ADD status ENUM('pending', 'completed') DEFAULT 'pending';
-
-ALTER TABLE users ADD google_id VARCHAR(255);
 
 
 
