@@ -7,26 +7,36 @@ function Task() {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [description, setDescription] = useState("");
-  const [userId, setUserId] = useState(null);
+  const [assignedTo, setAssignedTo] = useState("");
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const role = localStorage.getItem("role");
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
-    const storedUserId = localStorage.getItem("user_id");
-    if (storedUserId) {
-      setUserId(Number(storedUserId));
+    if (role === "admin") {
+      fetchUsers();
     }
   }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/users", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      const data = await res.json();
+      setUsers(data);
+    } catch (err) {
+      console.error("Failed to fetch users", err);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!date || !time || !description) {
+    if (!date || !time || !description || !assignedTo) {
       alert("Please fill all fields");
-      return;
-    }
-
-    if (!userId) {
-      alert("Please login first");
       return;
     }
 
@@ -35,9 +45,12 @@ function Task() {
     try {
       const response = await fetch("http://localhost:5000/tasks", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify({
-          user_id: userId,
+          assigned_to: assignedTo,
           date,
           time,
           description
@@ -62,15 +75,32 @@ function Task() {
     }
   };
 
+  if (role !== "admin") {
+    return (
+      <div className="dashboard">
+        <Sidebar />
+        <div className="task-container">
+          <h2>⛔ Access Denied</h2>
+          <p>Only Admins can create tasks.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard" style={{height:"97.5vh"}}>
       <Sidebar />
       <div className="task-container">
-        <h2>➕ Add New Task</h2>
-
-        <p className="user-id">👤 User ID: {userId}</p>
+        <h2>➕ Assign New Task</h2>
 
         <form className="task-form" onSubmit={handleSubmit}>
+          <select className="option" value={assignedTo} onChange={e => setAssignedTo(e.target.value)} required>
+            <option value="">Select User</option>
+            {users.map(u => (
+              <option key={u.id} value={u.id}>{u.email}</option>
+            ))}
+          </select>
+
           <input type="date" value={date} onChange={e => setDate(e.target.value)} required />
           <input type="time" value={time} onChange={e => setTime(e.target.value)} required />
           <textarea

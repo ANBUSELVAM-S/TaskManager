@@ -25,9 +25,11 @@ function Login() {
     const result = await response.json();
 
     if (result.success) {
+      // ✅ SECURITY: Store Token and Real Role
+      localStorage.setItem("token", result.token);
       localStorage.setItem("user_id", result.user_id);
-      localStorage.setItem("role", "admin");   // ✅ ADD THIS
-      alert("Google Login Successful!");
+      localStorage.setItem("role", result.role);
+      alert("Login Successful!");
       navigate("/dashboard");
     } else {
       alert(result.message);
@@ -59,26 +61,27 @@ function Login() {
     const result = await response.json();
 
     // 3️⃣ Store user_id returned from DB
-   localStorage.setItem("user_id", result.user_id);
-   localStorage.setItem("role", "google");  
-   alert("Google Login Successful!");// ✅ ADD THIS
-   navigate("/dashboard");
-
+    if (result.success) {
+      localStorage.setItem("token", result.token);
+      localStorage.setItem("user_id", result.user_id);
+      localStorage.setItem("role", result.role);
+      alert("Google Login Successful!");
+      navigate("/dashboard");
+    } else {
+      // Show the actual error message from the backend
+      alert(result.message || "Google Login Failed: Server returned an error");
+    }
 
   } catch (error) {
     console.error(error);
-    alert("Google Login Failed");
+    alert("Google Login Failed: " + error.message);
   }
 };
-
-
 
   const handleLoginError = () => {
     console.log("Google Login Failed");
     alert("Google Login Failed!");
   };
-
-
 
 
   return (

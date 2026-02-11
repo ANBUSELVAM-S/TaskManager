@@ -23,18 +23,20 @@ function Dashboard() {
     pending: 0
   });
 
-  const userId = localStorage.getItem("user_id");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (userId) {
+    if (token) {
       fetchDashboardCounts();
     }
-  }, [userId]);
+  }, [token]);
 
   const fetchDashboardCounts = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/dashboard/counts?user_id=${userId}`
+        `http://localhost:5000/dashboard/counts`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        }
       );
       const data = await response.json();
       setCounts(data);

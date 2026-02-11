@@ -6,6 +6,15 @@
   background-color: rgb(255, 252, 252);
   
 }
+.option{
+  width: 103%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  outline: none;
+  transition: 0.3s;
+}
   
 
 /* Form card */

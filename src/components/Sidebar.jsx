@@ -8,6 +8,12 @@ function Sidebar() {
   const [open, setOpen] = useState(false);
   const [role, setRole] = useState("");
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("role");
+    navigate("/");
+  };
 
 
 
@@ -25,7 +31,7 @@ function Sidebar() {
           <li onClick={() => navigate("/dashboard")}> Dashboard</li>
           <li onClick={() => navigate("/Task")}>Tasks</li>
           <li onClick={() => navigate("/Pending")}>Pending</li>
-          <li onClick={() => navigate("/")}>Logout</li>
+          <li onClick={handleLogout}>Logout</li>
         </ul>
       </div>
     </>

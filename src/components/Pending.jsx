@@ -9,8 +9,8 @@ function Pending() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
 
-
-  const userId = localStorage.getItem("user_id");
+  const role = localStorage.getItem("role");
+  const token = localStorage.getItem("token");
 
   // ⏱ current date & time
   const now = new Date();
@@ -32,16 +32,18 @@ const closePopup = () => {
 
 
   useEffect(() => {
-    if (userId) {
+    if (token) {
       fetchTasks();
     }
-  }, [userId]);
+  }, [token]);
 
   // ✅ FETCH ONLY PENDING TASKS
   const fetchTasks = async () => {
     try {
       const res = await fetch(
-        `http://localhost:5000/tasks?user_id=${userId}`
+        `http://localhost:5000/tasks`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        }
       );
       const data = await res.json();
 
@@ -61,7 +63,8 @@ const closePopup = () => {
   // ✅ COMPLETE TASK
   const completeTask = async (id) => {
     await fetch(`http://localhost:5000/tasks/${id}/complete`, {
-      method: "PUT"
+      method: "PUT",
+      headers: { "Authorization": `Bearer ${token}` }
     });
 
     setTasks(tasks.filter(task => task.id !== id));
@@ -72,7 +75,8 @@ const closePopup = () => {
     if (!window.confirm("Delete this task?")) return;
 
     await fetch(`http://localhost:5000/tasks/${id}`, {
-      method: "DELETE"
+      method: "DELETE",
+      headers: { "Authorization": `Bearer ${token}` }
     });
 
     setTasks(tasks.filter(task => task.id !== id));
@@ -83,7 +87,7 @@ const closePopup = () => {
       <Sidebar />
 
       <div className="pending-container">
-  <h1 className="pending-title">📋 Pending Tasks</h1>
+  <h1 className="pending-title">📋 {role === "admin" ? "All Pending Tasks" : "My Pending Tasks"}</h1>
 
   {loading ? (
     <p className="loading-text">Loading...</p>
@@ -109,6 +113,7 @@ const closePopup = () => {
           </div>
 
           <div className="task-desc">
+            {role === "admin" && <strong>[Assigned to: {task.assigned_user}] </strong>}
             {task.description}
           </div>
 
@@ -123,6 +128,7 @@ const closePopup = () => {
   ✅ Completed
 </button>
 
+{role === "admin" && (
 <button
   className="btn-delete"
   onClick={(e) => {
@@ -132,6 +138,7 @@ const closePopup = () => {
 >
   ❌ Delete
 </button>
+)}
 
           </div>
 
@@ -150,15 +157,7 @@ const closePopup = () => {
       <p><strong>Date:</strong> {selectedTask.date}</p>
       <p><strong>Time:</strong> {selectedTask.time}</p>
       <p><strong>Status:</strong> {selectedTask.status}</p>
-
-      {selectedTask.assigned_by_admin && (
-        <div className="assigned-by">
-  👤 Assigned by: <strong>{selectedTask.assigned_by_admin}</strong>
-</div>
-
-
-      )}
-
+      <p><strong>Assigned by:</strong> Admin</p>
       <button className="btn-close" onClick={closePopup}>
         Close
       </button>

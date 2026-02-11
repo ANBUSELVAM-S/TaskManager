@@ -19,7 +19,7 @@
 /* ================= LOADING & EMPTY ================= */
 .loading-text {
   font-size: 18px;
-  color: #000000;
+  color: #000;
 }
 
 .empty-box {
@@ -48,7 +48,6 @@
   margin-bottom: 15px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -57,23 +56,29 @@
   box-shadow: 0 6px 14px rgba(0,0,0,0.15);
 }
 
+/* ================= LINE 1 → DATE + TIME + ADMIN ================= */
 .task-datetime {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-size: 13px;
-  color: #000000;
+  color: #555;
   margin-bottom: 8px;
 }
 
+/* ================= LINE 2 → DESCRIPTION ================= */
 .task-desc {
   font-size: 16px;
   font-weight: 500;
-  color: #000000;
-  margin-bottom: 12px;
+  color: #000;
+  margin: 10px 0;
 }
 
-/* ================= TASK ACTIONS ================= */
+/* ================= LINE 3 → BUTTONS ================= */
 .task-actions {
   display: flex;
   gap: 10px;
+  margin-top: 10px;
 }
 
 .btn-complete {
@@ -148,10 +153,6 @@
   font-size: 15px;
 }
 
-.popup-card strong {
-  color: #333;
-}
-
 /* ================= CLOSE BUTTON ================= */
 .btn-close {
   margin-top: 18px;
@@ -168,77 +169,42 @@
   background: #000;
 }
 
-/* Mobile */
+/* ================= RESPONSIVE ================= */
+
+/* Tablet & Mobile */
 @media (max-width: 768px) {
-  .dashboards {
-    width:74%;
-    margin-left: 4rem;
-    height: 700px;
-    position: relative;
-    
-  }
 
   .pending-container {
-    width: 88.3%;
-
+    padding: 15px;
   }
 
   .pending-title {
-    font-size: 18px;
+    font-size: 20px;
   }
 
   .task-list {
     width: 100%;
   }
 
-  .task-card {
-    padding: 10px;
-    font-size: 13px;
-  }
-
+  /* Line 1 stacks nicely */
   .task-datetime {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
     font-size: 12px;
   }
 
   .task-desc {
     font-size: 14px;
-    display: flex;
   }
 
+  /* Buttons full width */
   .task-actions {
     flex-direction: column;
-    
-
   }
 
   .btn-complete,
   .btn-delete {
     width: 100%;
-    padding:8px;
-    font-size: 13px;
-  }
-}
-
-/* Tablet */
-@media (max-width: 768px) {
-  .dashboard {
-    width: 100%;
-  }
-
-  .pending-container {
-    max-width: 100%;
-  }
-
-  .task-list {
-    width: 100%;
-  }
-
-  .task-card {
-    font-size: 10px;
-  }
-
-  .task-actions {
-    flex-wrap: wrap;
-    gap: 8px;
   }
 }
