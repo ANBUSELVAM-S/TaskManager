@@ -109,6 +109,33 @@ app.get("/users", authenticateToken, requireAdmin, (req, res) => {
   });
 });
 
+/* ================= ADD USER (Admin Only) ================= */
+app.post("/users", authenticateToken, requireAdmin,
+  [
+    body("email").isEmail().withMessage("Invalid email format"),
+    body("password").isLength({ min: 4 }).withMessage("Password must be at least 4 characters")
+  ],
+  validateRequest,
+  async (req, res) => {
+  const { email, password } = req.body;
+
+  db.query("SELECT * FROM users WHERE email = ?", [email], async (err, result) => {
+    if (err) return res.status(500).json({ success: false, message: "Database error" });
+    if (result.length > 0) {
+      return res.status(400).json({ success: false, message: "User already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    db.query("INSERT INTO users (email, password, role) VALUES (?, ?, 'user')", [email, hashedPassword], (err, result) => {
+      if (err) return res.status(500).json({ success: false, message: "Error creating user" });
+      res.json({ success: true, message: "User created successfully" });
+    });
+  });
+});
+
+
+
 /* ================= ADD TASK (Admin Only) ================= */
 app.post("/tasks", authenticateToken, requireAdmin,
   [
@@ -244,4 +271,5 @@ app.post("/google-login",
 
 app.listen(5000, () => {
   console.log("🚀 Server running on http://localhost:5000");
+  console.log("✅ Successfully connected to MySQL database");
 });
