@@ -135,7 +135,7 @@
               <Bar data={barData} style={{height:"15rem"}}/>
             </div>
           </div>
-          <div className="add-user-box">
+          {/* <div className="add-user-box">
     <h3>Add New User</h3>
 
     <input
@@ -157,7 +157,7 @@
     <button onClick={handleAddUser}>
       Add User
     </button>
-  </div>
+  </div> */}
 
           
         </div>

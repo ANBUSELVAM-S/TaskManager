@@ -10,6 +10,7 @@ function Task() {
   const [assignedTo, setAssignedTo] = useState("");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [newUser, setNewUser] = useState({ email: "", password: "" });
 
   const role = localStorage.getItem("role");
   const token = localStorage.getItem("token");
@@ -31,6 +32,44 @@ function Task() {
       console.error("Failed to fetch users", err);
     }
   };
+
+  const handleAddUser = async (e) => {
+  e.preventDefault();
+
+  try {
+    const response = await fetch("http://localhost:5000/users", {  // ✅ FIXED URL
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(newUser)
+    });
+
+    const contentType = response.headers.get("content-type");
+
+    if (contentType && contentType.includes("application/json")) {
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("✅ User added successfully");
+        setNewUser({ email: "", password: "" });
+        fetchUsers();
+      } else {
+        alert(data.message || "❌ Failed to add user");
+      }
+    } else {
+      const text = await response.text();
+      console.error("Server response:", text);
+      alert(`Server Error: ${response.status}`);
+    }
+
+  } catch (error) {
+    console.error(error);
+    alert("❌ Network error or Server not reachable");
+  }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -112,6 +151,25 @@ function Task() {
           <button type="submit" disabled={loading}>
             {loading ? "Adding..." : "Add Task"}
           </button>
+        </form>
+
+        <h2 style={{ marginTop: "2rem" }}>👤 Add New User</h2>
+        <form className="task-form" onSubmit={handleAddUser}>
+          <input
+            type="email"
+            placeholder="User Email"
+            value={newUser.email}
+            onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+            required
+          />
+          <input
+            type="password"
+            placeholder="User Password"
+            value={newUser.password}
+            onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+            required
+          />
+          <button type="submit">Add User</button>
         </form>
       </div>
     </div>
