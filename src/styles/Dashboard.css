@@ -110,6 +110,7 @@
   .cards {
     flex-wrap: wrap;
     justify-content: center;
+    transition: left 0.3s ease-in-out;
   }
 
   .chart-box {
@@ -167,10 +168,10 @@
 
 /* Small Mobile */
 @media (max-width: 480px) {
-  .main-content {
-    padding: 10px;
-    
-  }
+    .main-content {
+      padding: 10px;
+      
+    }
 
   form, .first {
     width: 100%;

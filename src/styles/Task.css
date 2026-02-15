@@ -1,6 +1,3 @@
-
-
-
 .task-container{
   padding: 20px;
   width: 51rem;
@@ -120,7 +117,8 @@ ul li::before {
 @media (max-width: 768px) {
   
   .task-container {
-    width: 88.3%;
+    width: 100%;
+    transition: left 0.3s ease-in-out;
   }
 
   form {
@@ -137,12 +135,17 @@ ul li::before {
     
     font-size: 15px;
   }
+  .option{
+    width: 110%;
+    
+  }
 }
 
 /* Small Mobile - Smartphones */
 @media (max-width: 450px) {
   .task-container {
     width: 100%;
+    transition: left 0.3s ease-in-out;
     
   }
 
