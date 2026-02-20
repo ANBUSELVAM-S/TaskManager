@@ -60,6 +60,7 @@
   max-width: 100%;
   padding: 0;
   margin: 0 auto;
+  
 }
 
 .task-card {
@@ -155,6 +156,12 @@
   border-radius: 14px;
   box-shadow: 0 15px 35px rgba(0,0,0,0.25);
   animation: popupFade 0.3s ease;
+}
+.popup-card .btn-delete{
+  margin-top: 0.5rem;
+  width:100%;
+  
+  
 }
 
 @keyframes popupFade {

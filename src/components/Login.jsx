@@ -39,9 +39,13 @@ function Login() {
         localStorage.setItem("token", result.token);
         localStorage.setItem("user_id", result.user_id);
         localStorage.setItem("role", result.role);
-
-        alert("Login Successful!");
+        localStorage.setItem("email", email);
+        localStorage.setItem("loginTime", new Date().toLocaleString());
         navigate("/dashboard");
+            setTimeout(() => {
+               alert("Google Login Successful!");
+            }, 1000);
+
       } else {
         alert(result.message || "Login failed");
       }
@@ -91,9 +95,12 @@ function Login() {
         localStorage.setItem("token", result.token);
         localStorage.setItem("user_id", result.user_id);
         localStorage.setItem("role", result.role);
-
-        alert("Google Login Successful!");
+        localStorage.setItem("email", googleUser.email);
+        localStorage.setItem("loginTime", new Date().toLocaleString());
         navigate("/dashboard");
+            setTimeout(() => {
+               alert("Google Login Successful!");
+            }, 1000);
       } else {
         alert(result.message || "Google Login Failed");
       }

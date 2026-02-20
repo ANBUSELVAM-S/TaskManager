@@ -12,7 +12,7 @@
 /* Main Content */
 .main-content {
   flex: 1;
-  width: 73.3rem;
+  width: 73.4rem;
   height: 90%;
  
   background-color: white;
@@ -28,6 +28,78 @@
   justify-content: space-between;
   
 }
+/* Profile Container (top-right corner) */
+.profile-container {
+  position: absolute;
+  top: 1rem;
+  right: 4rem;
+  z-index: 1000;
+}
+
+/* Clickable Icon */
+.profile-icon {
+  cursor: pointer;
+  font-size: 2rem;
+  user-select: none;
+}
+
+/* Material UI Icon Styling */
+.account-icon {
+  color: #030303;
+  width: 3rem !important;
+  height: 4rem !important;
+  transition: 0.2s;
+}
+
+.account-icon:hover {
+  transform: scale(1.05);
+}
+
+/* Dropdown Panel */
+.profile-dropdown {
+  position: absolute;
+  right: 0;
+  top: 3rem;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 220px;
+  border: 1px solid #eee;
+}
+
+/* Email Text */
+.profile-email {
+  margin: 0.5rem 0;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Login Time Text */
+.profile-time {
+  margin: 0.5rem 0;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* Logout Button */
+.logout-btn {
+  margin-top: 0.5rem;
+  width: 100%;
+  padding: 0.5rem;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
+}
+
 
 /* ===== Add User Section ===== */
 

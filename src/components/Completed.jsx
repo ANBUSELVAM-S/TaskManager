@@ -74,7 +74,7 @@ function Completed() {
             <p>No completed tasks yet 🎉</p>
           </div>
         ) : (
-          <ul className="task-list" style={{ height: "80vh", overflowY: "auto" }}>
+          <ul className="task-list">
             {tasks.map(task => (
               <li key={task.id} className="task-card" onClick={() => openTaskPopup(task)}>
                 <div className="task-datetime">
@@ -115,7 +115,7 @@ function Completed() {
         e.stopPropagation();
         deleteTask(selectedTask.id);
         closePopup();
-      }} style={{marginTop:"0.5rem",width:"100%"}}
+      }} 
     >
       ❌ Delete
     </button>

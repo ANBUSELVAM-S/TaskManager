@@ -1,7 +1,9 @@
   import { useEffect, useState } from "react";
+  import { useNavigate } from "react-router-dom";
   import Sidebar from "./Sidebar";
   import Navbar from "./Navbar";
   import "../styles/Dashboard.css";
+  import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
   import {
     Chart as ChartJS,
@@ -17,6 +19,7 @@
   ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
   function Dashboard() {
+    const navigate = useNavigate();
     const [counts, setCounts] = useState({
       total: 0,
       completed: 0,
@@ -26,6 +29,9 @@
     email: "",
     password: ""
   });
+    const [showProfile, setShowProfile] = useState(false);
+    const userEmail = localStorage.getItem("email");
+    const loginTime = localStorage.getItem("loginTime");
 
 
     const token = localStorage.getItem("token");
@@ -108,6 +114,42 @@
         <Sidebar />
         <div className="main-content">
         <Navbar />
+          
+          {/* 👤 User Profile & Logout Section */}
+          {/* 👤 User Profile & Logout Section */}
+<div className="profile-container">
+  <div
+    onClick={() => setShowProfile(!showProfile)}
+    className="profile-icon"
+    title="User Profile"
+  >
+    <AccountCircleIcon className="account-icon" />
+  </div>
+
+  {showProfile && (
+    <div className="profile-dropdown">
+      <p className="profile-email">
+        👤 {userEmail || "User"}
+      </p>
+
+      <p className="profile-time">
+        🕒 Login: {loginTime}
+      </p>
+
+      <button
+        className="logout-btn"
+        onClick={() => {
+          localStorage.clear();
+          navigate("/");
+        }}
+      >
+        Logout
+      </button>
+    </div>
+  )}
+</div>
+
+
           <div className="cards">
             <div className="card">
               <h3>Total Tasks</h3>
