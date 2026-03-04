@@ -8,6 +8,7 @@ function Pending() {
   const [loading, setLoading] = useState(true);
   const [selectedTask, setSelectedTask] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const role = localStorage.getItem("role");
   const token = localStorage.getItem("token");
@@ -82,12 +83,26 @@ const closePopup = () => {
     setTasks(tasks.filter(task => task.id !== id));
   };
 
+  // 🔍 Filter Tasks based on Search
+  const filteredTasks = tasks.filter(task => 
+    task.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (task.assigned_user && task.assigned_user.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
+  // ⚠️ Check if task is overdue
+  const isOverdue = (date, time) => {
+    const taskTime = new Date(`${date}T${time}`);
+    return taskTime < new Date();
+  };
+
   return (
     <div className="dashboards">
       <Sidebar />
 
       <div className="pending-container">
   <h1 className="pending-title">📋 {role === "admin" ? "All Pending Tasks" : "My Pending Tasks"}</h1>
+
+  <input type="text" placeholder="🔍 Search by description or user..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="search-bar" />
 
   {loading ? (
     <p className="loading-text">Loading...</p>
@@ -100,16 +115,20 @@ const closePopup = () => {
     </div>
   ) : (
     <ul className="task-list">
-      {tasks.map(task => (
+      {filteredTasks.map(task => {
+        const overdue = isOverdue(task.date, task.time);
+        return (
         <li
   key={task.id}
   className="task-card"
   onClick={() => openTaskPopup(task)}
+  style={overdue ? { borderLeft: "6px solid #ff4d4d", backgroundColor: "#fff0f0" } : {}}
 >
 
           
           <div className="task-datetime">
-            Now: 📅 {todayDate} ⏰ {currentTime}
+            {overdue && <span style={{ color: "#d9534f", fontWeight: "bold", marginRight: "5px" }}>⚠️ Overdue</span>}
+            📅 {task.date} ⏰ {task.time}
           </div>
 
           <div className="task-desc">
@@ -143,7 +162,8 @@ const closePopup = () => {
           </div>
 
         </li>
-      ))}
+      );
+      })}
     </ul>
   )}
 </div>

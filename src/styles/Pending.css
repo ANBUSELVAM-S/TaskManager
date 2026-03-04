@@ -60,6 +60,7 @@
   max-width: 100%;
   padding: 0;
   margin: 0 auto;
+  scrollbar-width: none; 
   
 }
 
@@ -75,6 +76,16 @@
 .task-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+
+.search-bar {
+  width: 68%;
+  padding: 12px;
+  margin: 0 auto 20px auto;
+  display: block;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;  
 }
 
 /* ================= TASK DETAILS ================= */
@@ -99,8 +110,9 @@
 
 /* ================= TASK ACTION BUTTONS ================= */
 .task-actions {
-  display: flex;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
   flex-wrap: wrap;
   margin-top: 12px;
 }

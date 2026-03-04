@@ -43,7 +43,7 @@ function Login() {
         localStorage.setItem("loginTime", new Date().toLocaleString());
         navigate("/dashboard");
             setTimeout(() => {
-               alert("Google Login Successful!");
+               alert("Login Successful!");
             }, 1000);
 
       } else {
@@ -155,3 +155,5 @@ function Login() {
 }
 
 export default Login;
+
+
