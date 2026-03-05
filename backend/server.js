@@ -3,10 +3,21 @@ const mysql = require("mysql2");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { body, validationResult } = require("express-validator");
 require("dotenv").config();
 
+// Import Middleware
+const applySecurity = require("./middleware/security.js");
+const { authenticateToken, requireAdmin } = require("./middleware/auth.js");
+const {
+  validateRequest,
+  loginRules,
+  addUserRules,
+  addTaskRules,
+  googleLoginRules,
+} = require("./middleware/validation");
+
 const app = express();
+applySecurity(app);
 app.use(cors());
 app.use(express.json());
 
@@ -27,43 +38,15 @@ const db = mysql.createPool({
   queueLimit: 0
 });
 
-// ✅ SECURITY: Middleware to verify JWT
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  if (!token) return res.sendStatus(401);
-
-  jwt.verify(token, SECRET_KEY, (err, user) => {
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
-};
-
-// ✅ SECURITY: Middleware for Admin only
-const requireAdmin = (req, res, next) => {
-  if (req.user.role !== "admin") return res.status(403).json({ message: "Admins only" });
-  next();
-};
-
-// ✅ VALIDATION: Middleware to handle validation errors
-const validateRequest = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ success: false, message: errors.array()[0].msg, errors: errors.array() });
-  }
-  next();
-};
-
 /* ================= LOGIN ================= */
-app.post("/login",
-  [
-    body("email").isEmail().withMessage("Invalid email format"),
-    body("password").isLength({ min: 4 }).withMessage("Password must be at least 4 characters")
-  ],
+app.post(
+  "/login",
+  loginRules,
   validateRequest,
   (req, res) => {
   const { email, password } = req.body;
+  console.log("loginRules:", loginRules);
+  console.log("validateRequest:", validateRequest);
 
   db.query(
     "SELECT * FROM users WHERE email = ?",
@@ -110,11 +93,11 @@ app.get("/users", authenticateToken, requireAdmin, (req, res) => {
 });
 
 /* ================= ADD USER (Admin Only) ================= */
-app.post("/users", authenticateToken, requireAdmin,
-  [
-    body("email").isEmail().withMessage("Invalid email format"),
-    body("password").isLength({ min: 4 }).withMessage("Password must be at least 4 characters")
-  ],
+app.post(
+  "/users",
+  authenticateToken,
+  requireAdmin,
+  addUserRules,
   validateRequest,
   async (req, res) => {
   const { email, password } = req.body;
@@ -127,7 +110,7 @@ app.post("/users", authenticateToken, requireAdmin,
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    db.query("INSERT INTO users (email, password, role) VALUES (?, ?, 'user')", [email, hashedPassword], (err, result) => {
+    db.query("INSERT INTO users (email, google_id, password, role) VALUES (?, ?, ?, 'user')", [email, null, hashedPassword], (err, result) => {
       if (err) return res.status(500).json({ success: false, message: "Error creating user" });
       res.json({ success: true, message: "User created successfully" });
     });
@@ -137,13 +120,11 @@ app.post("/users", authenticateToken, requireAdmin,
 // hello
 
 /* ================= ADD TASK (Admin Only) ================= */
-app.post("/tasks", authenticateToken, requireAdmin,
-  [
-    body("assigned_to").isInt().withMessage("Assigned user ID must be valid"),
-    body("date").isDate().withMessage("Invalid date format (YYYY-MM-DD)"),
-    body("time").matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).withMessage("Invalid time format (HH:MM)"),
-    body("description").trim().notEmpty().withMessage("Description is required")
-  ],
+app.post(
+  "/tasks",
+  authenticateToken,
+  requireAdmin,
+  addTaskRules,
   validateRequest,
   (req, res) => {
   const { assigned_to, date, time, description } = req.body;
@@ -227,11 +208,9 @@ app.delete("/tasks/:id", authenticateToken, requireAdmin, (req, res) => {
   });
 });
 
-app.post("/google-login",
-  [
-    body("email").isEmail().withMessage("Invalid email format"),
-    body("google_id").notEmpty().withMessage("Google ID is required")
-  ],
+app.post(
+  "/google-login",
+  googleLoginRules,
   validateRequest,
   (req, res) => {
   const { email, google_id } = req.body;
@@ -264,6 +243,15 @@ app.post("/google-login",
         res.json({ success: true, token, user_id: newUser.id, role: newUser.role });
       }
     );
+  });
+});
+// 🌍 Global Error Handler
+
+app.use((err, req, res, next) => {
+  console.error("Server Error:", err);
+  res.status(500).json({
+    success: false,
+    message: "Internal Server Error"
   });
 });
 
