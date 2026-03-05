@@ -27,6 +27,15 @@ if (!SECRET_KEY) {
   process.exit(1);
 }
 
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
 // ✅ SCALABILITY: Use Connection Pool
 const db = mysql.createPool({
   host: process.env.DB_HOST,
@@ -127,17 +136,37 @@ app.post(
   addTaskRules,
   validateRequest,
   (req, res) => {
+
   const { assigned_to, date, time, description } = req.body;
 
-  if (!assigned_to) {
-    return res.status(400).json({ success: false, message: "Assigned user required" });
-  }
-
-  const sql =
-    "INSERT INTO tasks (user_id, date, time, description, status) VALUES (?,?,?,?, 'pending')";
+  const sql = "INSERT INTO tasks (user_id, date, time, description, status) VALUES (?,?,?,?, 'pending')";
 
   db.query(sql, [assigned_to, date, time, description], (err, result) => {
     if (err) return res.status(500).json({ success: false });
+
+    // 🔹 Get user email
+    db.query("SELECT email FROM users WHERE id=?", [assigned_to], (err, userResult) => {
+      if (!err && userResult.length > 0) {
+
+        const userEmail = userResult[0].email;
+
+        const mailOptions = {
+          from: "Task Manager <anbuselvam.sk05@gmail.com>",
+          to: userEmail,
+          subject: "New Task Assigned",
+          text: `You have a new task:\n\n${description}\nDate: ${date}\nTime: ${time}`
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.log("Email error:", error);
+          } else {
+            console.log("Email sent:", info.response);
+          }
+        });
+      }
+    });
+
     res.json({ success: true });
   });
 });
