@@ -89,10 +89,7 @@
 
 /* Responsive */
 @media (max-width: 480px) {
-  .login-box {
-    width: 90%;
-    padding: 30px 20px;
-  }
+  
 
   .login-box h2 {
     font-size: 22px;

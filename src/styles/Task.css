@@ -1,3 +1,4 @@
+
 .task-container{
   padding: 20px;
   width: 72.2rem;
@@ -125,62 +126,144 @@ ul li::before {
 
 /* Responsive for small screens */
 /* Tablet - Medium devices */
-@media (max-width: 768px) {
-  
+/* RESPONSIVE IMPROVEMENTS ONLY */
+
+/* Tablet - Medium devices */
+/* RESPONSIVE CSS - SAME STRUCTURE AS DASHBOARD */
+
+/* Tablet - Medium devices (601px - 1024px) */
+@media (min-width: 601px) and (max-width: 1024px) {
   .task-container {
     width: 100%;
-    transition: left 0.3s ease-in-out;
+    padding: 20px;
   }
 
   form {
-    width: 75%;
-   
+    width: 80%;
+    max-width: 600px;
+    margin-left: 2rem;
+    margin: 2rem auto;
+  }
+
+  .task-heading {
+    padding-left: 2rem;
+    font-size: 22px;
+  }
+
+  .cards {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   ul li {
     font-size: 13px;
-    padding: 8px 10px;
-  }
-
-  form button {
-    
-    font-size: 15px;
-  }
-  .option{
-    width: 110%;
-    
+    padding: 10px;
   }
 }
 
-/* Small Mobile - Smartphones */
-@media (max-width: 450px) {
+/* Mobile (up to 600px) */
+@media (max-width: 600px) {
   .task-container {
     width: 100%;
-    display: flex;
-    transition: left 0.3s ease-in-out;
-    
+    padding: 15px;
+    height: auto;
+    margin-top: 70px; /* Space for fixed navbar */
+  }
+
+  form {
+    width: 95%;
+    margin: 1rem auto;
+    margin-left: 0;
+    padding: 20px 15px;
+  }
+
+  .task-heading {
+    font-size: 20px;
+    padding-left: 1rem;
+    margin-bottom: 20px;
+  }
+
+  .cards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  ul li {
+    width: 95%;
+    font-size: 14px;
+    padding: 12px;
+    margin: 0 auto 8px;
+    flex-direction: row;
+  }
+
+  textarea {
+    height: 8rem;
+  }
+
+  .option {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  form button {
+    padding: 14px;
+    font-size: 15px;
+  }
+}
+
+/* Small Mobile (361px - 480px) */
+@media (max-width: 480px) and (min-width: 361px) {
+  .task-container {
+    padding: 10px;
   }
 
   form {
     width: 100%;
-    
+    padding: 15px;
+  }
+
+  .task-heading {
+    font-size: 18px;
+    padding-left: 0.5rem;
+  }
+}
+
+/* Extra Small Mobile (up to 360px) */
+@media (max-width: 360px) {
+  .task-container {
+    padding: 8px;
+  }
+
+  form {
+    padding: 12px 10px;
+  }
+
+  .task-heading {
+    font-size: 16px;
+    padding-left: 0.5rem;
   }
 
   form input,
-  form textarea {
+  form textarea,
+  .option {
+    padding: 10px;
     font-size: 14px;
   }
 
   ul li {
-    font-size: 12px;
-    padding: 6px 8px;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  form button {
-    width: 100%;
-    
-    font-size: 14px;
+    padding: 10px;
+    font-size: 13px;
   }
 }
+
+/* Landscape Mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .task-container {
+    padding: 10px;
+  }
+  
+  textarea {
+    height: 6rem;
+  }
+}
+

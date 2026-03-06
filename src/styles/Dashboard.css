@@ -2,7 +2,7 @@
 .dashboard {
   display: flex;
    font-family: 'Poppins', sans-serif;
-  height: 97vh;
+  height: 98vh;
   background: #f6f6f6;
 }
 /* 
@@ -21,7 +21,6 @@
 .main-content::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
-
 /* Navbar */
 .navbar {
   display: flex;
@@ -185,87 +184,6 @@
 
 /* ================= RESPONSIVE ONLY ================= */
 
-/* Tablet */
-@media (max-width: 1024px) {
-  .cards {
-    flex-wrap: wrap;
-    justify-content: center;
-    transition: left 0.3s ease-in-out;
-  }
-
-  .chart-box {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .chart-title {
-    width: 90%;
-  }
-}
-/* Slide Sidebar from Left */
-@media (max-width: 768px) {
-
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: -260px;   /* hidden */
-    height: 100vh;
-    width: 220px;
-    transition: left 0.3s ease-in-out;
-    z-index: 1000;
-  }
-
-  .sidebar.open {
-    left: 0;       /* visible */
-  }
-}
-
-
-/* Mobile */
-@media (max-width: 768px) {
-  .dashboard {
-    height: 110vh;
-  }
-
-  .cards {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .card {
-    width: 80%;
-  }
-
-  .chart-box {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .chart-title {
-    width: 100%;
-  }
-}
-
-/* Small Mobile */
-@media (max-width: 480px) {
-    .main-content {
-      padding: 10px;
-      
-    }
-
-  form, .first {
-    width: 100%;
-  }
-
-  .card p {
-    font-size: 20px;
-  }
-
-  ul li {
-    font-size: 12px;
-  }
-}
-
 
 .chart-box {
   display: flex;
@@ -274,4 +192,118 @@
 }
 .piedata{
   text-align: center;
+}
+/* ================= MOBILE (up to 600px) ================= */
+/* ================= MOBILE (up to 600px) ================= */
+
+@media (max-width: 600px) {
+
+.dashboard{
+  flex-direction: column;
+  width: 95%;
+  height: auto;
+}
+
+/* Sidebar */
+.sidebar{
+  width: 60%;
+  height: auto;
+}
+
+/* Main content */
+.main-content{
+  width: 90%;
+  
+  height: auto;
+  padding: 15px;
+}
+
+/* Cards */
+.cards{
+  flex-direction: column;
+  align-items: center;
+}
+
+.card{
+  width: 90%;
+  margin-left: 0;
+}
+
+/* Add user box */
+.add-user-box{
+  margin-left: 0;
+  width: 90%;
+}
+
+/* Charts */
+.chart-box{
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Profile icon */
+.profile-container{
+  right: 1rem;
+}
+
+}
+
+
+/* ================= TABLET (601px - 1024px) ================= */
+
+@media (min-width: 601px) and (max-width: 1024px){
+
+.dashboard{
+  flex-direction: row;
+}
+
+/* Sidebar smaller */
+.sidebar{
+  width: 180px;
+}
+
+/* Main content */
+.main-content{
+  width: 50%;
+}
+
+/* Cards */
+.cards{
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card{
+  width: 45%;
+  margin-left: 0;
+}
+
+/* Add user */
+.add-user-box{
+  margin-left: 0;
+  width: 80%;
+}
+
+/* Charts */
+.chart-box{
+  flex-direction: column;
+  align-items: center;
+}
+
+}
+
+
+/* ================= LARGE SCREEN (1025px+) ================= */
+
+@media (min-width: 1025px){
+
+.cards{
+  justify-content: flex-start;
+}
+
+.chart-box{
+  flex-direction: row;
+}
+
 }

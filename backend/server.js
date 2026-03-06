@@ -92,7 +92,6 @@ app.post(
     }
   );
 });
-
 /* ================= GET USERS (For Admin Dropdown) ================= */
 app.get("/users", authenticateToken, requireAdmin, (req, res) => {
   db.query("SELECT id, email FROM users WHERE role = 'user'", (err, results) => {
@@ -193,20 +192,72 @@ app.get("/tasks", authenticateToken, (req, res) => {
 
 /* ================= COMPLETE TASK ================= */
 app.put("/tasks/:id/complete", authenticateToken, (req, res) => {
-  // Allow Admin or the Task Owner to complete
-  const sql = req.user.role === 'admin' 
+
+  const taskId = req.params.id;
+
+  const sql = req.user.role === 'admin'
     ? "UPDATE tasks SET status='completed' WHERE id=?"
     : "UPDATE tasks SET status='completed' WHERE id=? AND user_id=?";
-    
-  const params = req.user.role === 'admin' ? [req.params.id] : [req.params.id, req.user.id];
+
+  const params = req.user.role === 'admin'
+    ? [taskId]
+    : [taskId, req.user.id];
 
   db.query(sql, params, (err, result) => {
-    if (err) return res.status(500).json({ success: false });
-    if (result.affectedRows === 0) return res.status(403).json({ success: false, message: "Unauthorized" });
-    res.json({ success: true });
-  });
-});
 
+    if (err) return res.status(500).json({ success: false });
+
+    if (result.affectedRows === 0) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized"
+      });
+    }
+
+    /* 🔹 GET TASK DETAILS */
+    db.query(
+      `SELECT t.description, t.date, t.time, u.email
+       FROM tasks t
+       JOIN users u ON t.user_id = u.id
+       WHERE t.id = ?`,
+      [taskId],
+      (err, taskResult) => {
+
+        if (!err && taskResult.length > 0) {
+
+          const task = taskResult[0];
+
+          const mailOptions = {
+            from: "Task Manager <" + process.env.EMAIL_USER + ">",
+            to: process.env.ADMIN_EMAIL,
+            subject: "Task Completed",
+            text: `
+User has completed a task.
+
+Task Description: ${task.description}
+Date: ${task.date}
+Time: ${task.time}
+
+Completed by: ${task.email}
+            `
+          };
+
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              console.log("Email error:", error);
+            } else {
+              console.log("Completion email sent:", info.response);
+            }
+          });
+        }
+
+      });
+
+    res.json({ success: true });
+
+  });
+
+});
 // 📊 Dashboard counts API
 app.get("/dashboard/counts", authenticateToken, (req, res) => {
   let sql;
