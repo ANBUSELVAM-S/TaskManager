@@ -28,6 +28,7 @@ if (!SECRET_KEY) {
 }
 
 const nodemailer = require("nodemailer");
+const cron = require("node-cron"); // ✅ added
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -135,12 +136,15 @@ app.post(
   addTaskRules,
   validateRequest,
   (req, res) => {
+   
+  console.log("Incoming Task:", req.body);
+  // ✅ FIX: Include 'priority' when creating a task.
+  const { assigned_to, date, time, description, priority } = req.body;
 
-  const { assigned_to, date, time, description } = req.body;
+  // ✅ FIX: Add 'priority' to the SQL INSERT statement.
+  const sql = "INSERT INTO tasks (user_id, date, time, description, priority, status) VALUES (?,?,?,?, ?, 'pending')";
 
-  const sql = "INSERT INTO tasks (user_id, date, time, description, status) VALUES (?,?,?,?, 'pending')";
-
-  db.query(sql, [assigned_to, date, time, description], (err, result) => {
+  db.query(sql, [assigned_to, date, time, description, priority || 'medium'], (err, result) => {
     if (err) return res.status(500).json({ success: false });
 
     // 🔹 Get user email
@@ -177,10 +181,10 @@ app.get("/tasks", authenticateToken, (req, res) => {
 
   if (req.user.role === "admin") {
     // Admin sees ALL tasks with assignee info
-    sql = "SELECT t.*, u.email as assigned_user FROM tasks t JOIN users u ON t.user_id = u.id ORDER BY date, time";
+    sql = "SELECT t.*, u.email as assigned_user FROM tasks t JOIN users u ON t.user_id = u.id ORDER BY CASE t.priority WHEN 'high' THEN 1 WHEN 'medium' THEN 2 WHEN 'low' THEN 3 ELSE 4 END, t.date, t.time";
   } else {
     // User sees ONLY their tasks
-    sql = "SELECT * FROM tasks WHERE user_id = ? ORDER BY date, time";
+    sql = "SELECT * FROM tasks WHERE user_id = ? ORDER BY CASE priority WHEN 'high' THEN 1 WHEN 'medium' THEN 2 WHEN 'low' THEN 3 ELSE 4 END, date, time";
     params = [req.user.id];
   }
 
@@ -324,6 +328,81 @@ app.post(
       }
     );
   });
+});
+
+
+/* ================= TASK REMINDER SCHEDULER ================= */
+
+cron.schedule("* * * * *", () => {
+
+  const sql = `
+    SELECT t.id, t.description, t.date, t.time, u.email
+    FROM tasks t
+    JOIN users u ON t.user_id = u.id
+    WHERE t.status = 'pending' AND (t.reminder_sent = FALSE OR t.reminder_sent IS NULL)
+  `;
+
+  db.query(sql, (err, tasks) => {
+
+    if (err) {
+      console.error("Reminder scheduler error:", err);
+      return;
+    }
+
+    const now = new Date();
+
+    tasks.forEach(task => {
+
+      // The `task.date` from mysql2 is a Date object. We need to format it correctly
+      // to combine it with the time string.
+      const dateString = task.date.toISOString().substring(0, 10); // "YYYY-MM-DD"
+      const deadline = new Date(`${dateString}T${task.time}`);
+
+      // 1 hour before deadline
+      const reminderTime = new Date(deadline.getTime() - (60 * 60 * 1000));
+
+      if (now >= reminderTime && now < deadline) {
+
+        const mailOptions = {
+          from: "Task Manager <" + process.env.EMAIL_USER + ">",
+          to: task.email,
+          subject: "⏰ Task Reminder - Deadline Approaching",
+          text: `
+Reminder: Your task deadline is approaching.
+
+Task: ${task.description}
+
+Deadline Date: ${task.date}
+Deadline Time: ${task.time}
+
+Please complete your task before the deadline.
+          `
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+
+          if (error) {
+            console.log("Reminder email error:", error);
+          } else {
+
+            console.log("Reminder email sent:", info.response);
+
+            // mark reminder as sent
+            db.query(
+              "UPDATE tasks SET reminder_sent = TRUE WHERE id = ?",
+              [task.id]
+            );
+
+          }
+
+        });
+
+      }
+
+    });
+
+  });
+
 });
 // 🌍 Global Error Handler
 

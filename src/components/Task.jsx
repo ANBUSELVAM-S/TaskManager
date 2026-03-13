@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Sidebar from "./Sidebar";
 import "../styles/Task.css";
 
@@ -8,6 +8,7 @@ function Task() {
   const [time, setTime] = useState("");
   const [description, setDescription] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
+  const [priority, setPriority] = useState("medium");
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newUser, setNewUser] = useState({ email: "", password: "" });
@@ -16,13 +17,7 @@ function Task() {
   const role = localStorage.getItem("role");
   const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    if (role === "admin") {
-      fetchUsers();
-    }
-  }, []);
-
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       const res = await fetch("http://localhost:5000/users", {
         headers: { "Authorization": `Bearer ${token}` }
@@ -32,8 +27,13 @@ function Task() {
     } catch (err) {
       console.error("Failed to fetch users", err);
     }
-  };
+  }, [token]);
 
+  useEffect(() => {
+    if (role === "admin") {
+      fetchUsers();
+    }
+  }, [role, fetchUsers]);
   const handleAddUser = async (e) => {
   e.preventDefault();
 
@@ -76,7 +76,7 @@ function Task() {
     e.preventDefault();
 
     if (!date || !time || !description || !assignedTo) {
-      alert("Please fill all fields");
+      alert("Please fill all fields.");
       return;
     }
 
@@ -93,7 +93,8 @@ function Task() {
           assigned_to: assignedTo,
           date,
           time,
-          description
+          description,
+          priority,
         })
       });
 
@@ -104,6 +105,8 @@ function Task() {
         setDate("");
         setTime("");
         setDescription("");
+        setAssignedTo("");
+        setPriority("medium");
       } else {
         alert("❌ " + result.message);
       }
@@ -139,6 +142,12 @@ function Task() {
             {users.map(u => (
               <option key={u.id} value={u.id}>{u.email}</option>
             ))}
+          </select>
+
+          <select className="option" value={priority} onChange={e => setPriority(e.target.value)} required>
+            <option value="low">Low Priority</option>
+            <option value="medium">Medium Priority</option>
+            <option value="high">High Priority</option>
           </select>
 
           <input type="date" value={date} onChange={e => setDate(e.target.value)} required />

@@ -95,6 +95,14 @@ const closePopup = () => {
     return taskTime < new Date();
   };
 
+  const getPriorityClass = (priority) => {
+    const p = priority?.toLowerCase();
+    if (p === 'high') return 'priority-high';
+    if (p === 'medium') return 'priority-medium';
+    if (p === 'low') return 'priority-low';
+    return '';
+  };
+
   return (
     <div className="dashboards">
       <Sidebar />
@@ -134,6 +142,10 @@ const closePopup = () => {
           <div className="task-desc">
             {role === "admin" && <strong>[Assigned to: {task.assigned_user}] </strong>}
             {task.description}
+          </div>
+
+          <div className={`task-priority ${getPriorityClass(task.priority)}`} style={{marginTop: '10px'}}>
+            Priority: {task.priority || 'Medium'}
           </div>
 
           <div className="task-actions">
@@ -177,6 +189,7 @@ const closePopup = () => {
       <p><strong>Date:</strong> {selectedTask.date}</p>
       <p><strong>Time:</strong> {selectedTask.time}</p>
       <p><strong>Status:</strong> {selectedTask.status}</p>
+      <p><strong>Priority:</strong> <span className={`task-priority ${getPriorityClass(selectedTask.priority)}`}>{selectedTask.priority || 'Medium'}</span></p>
       <p><strong>Assigned by:</strong> Admin</p>
       <button className="btn-close" onClick={closePopup}>
         Close

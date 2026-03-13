@@ -39,6 +39,11 @@ const addTaskRules = [
     .trim()
     .notEmpty()
     .withMessage("Description is required"),
+  // ✅ IMPROVEMENT: Add validation for the priority field.
+  body("priority")
+    .optional()
+    .isIn(['low', 'medium', 'high'])
+    .withMessage("Invalid priority value. Must be 'low', 'medium', or 'high'."),
 ];
 
 const googleLoginRules = [

@@ -67,6 +67,14 @@ function Completed() {
     (task.assigned_user && task.assigned_user.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  const getPriorityClass = (priority) => {
+    const p = priority?.toLowerCase();
+    if (p === 'high') return 'priority-high';
+    if (p === 'medium') return 'priority-medium';
+    if (p === 'low') return 'priority-low';
+    return '';
+  };
+
   return (
     <div className="dashboards">
       <Sidebar />
@@ -94,6 +102,10 @@ function Completed() {
                   {task.description}
                 </div>
 
+                <div className={`task-priority ${getPriorityClass(task.priority)}`} style={{marginTop: '10px'}}>
+                  Priority: {task.priority || 'Medium'}
+                </div>
+
                 <div className="task-actions">
                   {role === "admin" && (
                     <button className="btn-delete" onClick={(e) => { e.stopPropagation(); deleteTask(task.id); }}>
@@ -115,6 +127,7 @@ function Completed() {
             <p><strong>Date:</strong> {selectedTask.date}</p>
             <p><strong>Time:</strong> {selectedTask.time}</p>
             <p><strong>Status:</strong> {selectedTask.status}</p>
+            <p><strong>Priority:</strong> <span className={`task-priority ${getPriorityClass(selectedTask.priority)}`}>{selectedTask.priority || 'Medium'}</span></p>
             <button className="btn-close" onClick={closePopup}>Close</button>
             {role === "admin" && (
     <button

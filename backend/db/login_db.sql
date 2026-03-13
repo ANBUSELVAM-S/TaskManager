@@ -23,6 +23,7 @@ CREATE TABLE tasks (
   date DATE NOT NULL,
   time TIME NOT NULL,
   description TEXT NOT NULL,
+  priority ENUM('low', 'medium', 'high') DEFAULT 'medium',
   status ENUM('pending', 'completed') DEFAULT 'pending',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -34,13 +35,13 @@ INSERT INTO users (email, password,role) VALUES
 ("anbuselvam.sk05@gmail.com", "$2b$10$GhA98XfQSixAh5pBoKPTB.elGlJyw.liQ.PCiaUwkZ0oXZcFp8bF2","admin");
 
 -- Insert sample tasks for admin user (id=1)
-INSERT INTO tasks (user_id, date, time, description) VALUES 
-(1, "2026-01-10", "10:30:00", "Sample admin task");
+INSERT INTO tasks (user_id, date, time, description, priority) VALUES 
+(1, "2026-01-10", "10:30:00", "Sample admin task", "high");
 
 -- Check if tasks exist for user_id = 1
 SELECT * FROM tasks WHERE user_id = 1 ORDER BY date, time;
 
-
+ALTER TABLE tasks ADD reminder_sent BOOLEAN DEFAULT FALSE;
 
 
 -- Verify the data
