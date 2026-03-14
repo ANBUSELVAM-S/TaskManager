@@ -133,8 +133,12 @@
             ) : (
               <ul className="task-list">
                 {tasks.map((task) => (
-                  <li key={task.id} className="task-card" style={{ borderLeft: task.status === 'completed' ? '6px solid #28a745' : '6px solid #ffc107' }}>
-                    <div className="task-datetime">📅 {task.date} ⏰ {task.time}</div>
+                  <li key={task.id} className="task-card" style={{ borderLeft: task.status === "completed" ? '6px solid #28a745' : '6px solid #ffc107' }}>
+                    <div className="task-datetime">📅 {new Date(task.date).toLocaleDateString("en-IN")} ⏰ {new Date(`1970-01-01T${task.time}`).toLocaleTimeString("en-IN", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: true
+})}</div>
                     <div className="task-desc">{task.description}</div>
                     <div style={{ textTransform: "capitalize", fontWeight: "bold", color: task.status === "completed" ? "#28a745" : "#ffc107" }}>
                       Status: {task.status}

@@ -332,14 +332,16 @@ app.post(
 
 
 /* ================= TASK REMINDER SCHEDULER ================= */
-
 cron.schedule("* * * * *", () => {
+
+  console.log("⏳ Checking reminders...");
 
   const sql = `
     SELECT t.id, t.description, t.date, t.time, u.email
     FROM tasks t
     JOIN users u ON t.user_id = u.id
-    WHERE t.status = 'pending' AND (t.reminder_sent = FALSE OR t.reminder_sent IS NULL)
+    WHERE t.status = 'pending'
+    AND (t.reminder_sent = FALSE OR t.reminder_sent IS NULL)
   `;
 
   db.query(sql, (err, tasks) => {
@@ -349,19 +351,33 @@ cron.schedule("* * * * *", () => {
       return;
     }
 
-    const now = new Date();
+    console.log("Tasks found:", tasks.length);
+
+    // 🇮🇳 Current Indian Time
+    const now = new Date(
+      new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
+
+    console.log("Current IST Time:", now);
 
     tasks.forEach(task => {
 
-      // The `task.date` from mysql2 is a Date object. We need to format it correctly
-      // to combine it with the time string.
-      const dateString = task.date.toISOString().substring(0, 10); // "YYYY-MM-DD"
-      const deadline = new Date(`${dateString}T${task.time}`);
-
-      // 1 hour before deadline
+      // combine date + time
+      const taskDate = new Date(task.date).toLocaleDateString("en-CA", {
+  timeZone: "Asia/Kolkata"
+});
+      const deadline = new Date(`${taskDate}T${task.time}+05:30`);
+      
+      // reminder = 1 hour before deadline
       const reminderTime = new Date(deadline.getTime() - (60 * 60 * 1000));
+      
+      // console.log("Task:", task.description);
+      // console.log("Deadline IST:", deadline);
+      // console.log("Reminder Time IST:", reminderTime);
 
       if (now >= reminderTime && now < deadline) {
+
+        console.log("⚡ Sending reminder email...");
 
         const mailOptions = {
           from: "Task Manager <" + process.env.EMAIL_USER + ">",
@@ -372,8 +388,7 @@ Reminder: Your task deadline is approaching.
 
 Task: ${task.description}
 
-Deadline Date: ${task.date}
-Deadline Time: ${task.time}
+Deadline: ${taskDate} ${task.time}
 
 Please complete your task before the deadline.
           `
@@ -385,9 +400,8 @@ Please complete your task before the deadline.
             console.log("Reminder email error:", error);
           } else {
 
-            console.log("Reminder email sent:", info.response);
+            console.log("✅ Reminder email sent:", info.response);
 
-            // mark reminder as sent
             db.query(
               "UPDATE tasks SET reminder_sent = TRUE WHERE id = ?",
               [task.id]

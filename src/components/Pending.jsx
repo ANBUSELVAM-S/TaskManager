@@ -14,13 +14,19 @@ function Pending() {
   const token = localStorage.getItem("token");
 
   // ⏱ current date & time
-  const now = new Date();
-  const todayDate = now.toISOString().split("T")[0];
-  const currentTime = now.toLocaleTimeString("en-IN", {
-    hour: "2-digit",
-    minute: "2-digit"
-  });
+ // ⏱ Indian current date & time
+const now = new Date();
 
+const todayDate = now.toLocaleDateString("en-CA", {
+  timeZone: "Asia/Kolkata"
+});
+
+const currentTime = now.toLocaleTimeString("en-IN", {
+  timeZone: "Asia/Kolkata",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: true
+});
   const openTaskPopup = (task) => {
   setSelectedTask(task);
   setShowPopup(true);
@@ -135,8 +141,8 @@ const closePopup = () => {
 
           
           <div className="task-datetime">
-            {overdue && <span style={{ color: "#d9534f", fontWeight: "bold", marginRight: "5px" }}>⚠️ Overdue</span>}
-            📅 {task.date} ⏰ {task.time}
+            {overdue && <span style={{ color: "#d9534f", fontWeight: "bold", marginRight: "5px" }}>⚠️ Overdue</span>}{" "}
+            📅 {new Date(task.date).toLocaleDateString("en-IN")}
           </div>
 
           <div className="task-desc">
@@ -187,7 +193,11 @@ const closePopup = () => {
 
       <p><strong>Description:</strong> {selectedTask.description}</p>
       <p><strong>Date:</strong> {selectedTask.date}</p>
-      <p><strong>Time:</strong> {selectedTask.time}</p>
+      <p><strong>Time:</strong> {new Date(`1970-01-01T${selectedTask.time}`).toLocaleTimeString("en-IN", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: true
+})}</p>
       <p><strong>Status:</strong> {selectedTask.status}</p>
       <p><strong>Priority:</strong> <span className={`task-priority ${getPriorityClass(selectedTask.priority)}`}>{selectedTask.priority || 'Medium'}</span></p>
       <p><strong>Assigned by:</strong> Admin</p>
